@@ -94,20 +94,20 @@ namespace MVC_SSO.Controllers
      
         {
             var certstring = "miidbtccafggawibagiqnqb+t2ncirna6ckvua1gwtajbgurdgmchquambixedaobgnvbamtb0rldljvb3qwhhcnmtawmtiwmjiwmdawwhcnmjawmtiwmjiwmdawwjavmrmweqydvqqdewppzhnydjn0zxn0miibijanbgkqhkig9w0baqefaaocaq8amiibcgkcaqeaqntksbdxoiolsmrnd+mms2m3o1idpk4uar0t4/yqo3zyhagawtwsq4ms+nwynqy5hab4ethnxuq2gwc5jkpo1yirorws97b5x9ljyhxpsdjcsikei9bxokl6wlq0uzpxhdytlpr4/o+0ilalxw8nu4+jb4ap8sn9ygyj5w0flw5ymwioxewvocz1whrzdjpxs8xnqhxwmuozvzqj+x6daov5fmrhu1r9/bbp0a1glv4bbttsh4kmyz1hxylho0evpg5p9yikstbnaw9enwvv5r8hn7ppei21asuqxekk0ow9jnedhewcktox7x5zulwkwwziksll0xnvczvgy7fcfwidaqabo1wwwjatbgnvhsueddakbggrbgefbqcdatbdbgnvhqeepda6gbdsfgdav+q2d2191r6a38tborqwejeqma4ga1ueaxmhrgv2um9vdiiqlfk7expng41nrnaenu0i9jajbgurdgmchquaa4ibaqbunmszxy5xosmew6mz4weajnonv2qvqnmk23rmzgmgr516roews5d3rltnyu8fkstncc4madm3e0bi4bbzw3awrpbluqtcymn3pivqdxx+zkwkiorjqqlivn8ct1fvpxxxb/e9godar8exsmb0pgnuhm4ijgnkwbbvwc9f/lzvwjlqgcir7d4gfxpyse1vf8tmdqay8/ptdakexmbrb9mihdggsogxlelrpa91yce+fircky3rqlnwvd4dooj/cpxsxwry8pwjnco5jd8q+rq5yzey7ypoifwemlhtdsbz3hlzr28ocgj3kbnpw0xgvqb3vhstvvbeei0cfxow6iz1";
-            var cert = new x509certificate2(convert.frombase64string(certstring));
+            var cert = new X509Certificate2(Convert.FromBase64String(certstring));
 
-            var parameters = new tokenvalidationparameters
+            var parameters = new TokenValidationParameters
             {
-                validaudience = "codeclient",
-                validissuer = "",
-                //issuersigningkey = new x509securitytoken(cert)
+                ValidAudience = "cdbcce09-5216-4d9a-8e67-0b2170306526",
+                ValidIssuer = "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0",
+                IssuerSigningKey = new X509SecurityToken(cert)
             };
 
-            securitytoken jwt;
-            var principal = new jwtsecuritytokenhandler().validatetoken(token, parameters, out jwt);
+            Microsoft.IdentityModel.Tokens.SecurityToken jwt;
+            var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
            
 
-            return principal.claims.tolist();
+            return principal.Claims.ToList();
         }
 
         //private async Task<IEnumerable<Claim>> GetUserInfoClaimsAsync(string accessToken)
