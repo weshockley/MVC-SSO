@@ -11,7 +11,12 @@ namespace MVC_SSO.Controllers
         // GET: CallBack
         public ActionResult Index()
         {
-            return View();
+            ViewBag.Code = Request.QueryString["code"] ?? "none";
+
+           return View();
         }
+
+
+
     }
 }
