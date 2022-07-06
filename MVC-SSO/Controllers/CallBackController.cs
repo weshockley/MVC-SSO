@@ -1,5 +1,4 @@
 ﻿using IdentityModel;
-//using IdentityModel.Client;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -36,23 +35,24 @@ namespace MVC_SSO.Controllers
          
             var code = Request.QueryString["code"];
 
+
             var client = new HttpClient();
 
             var response = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
-                Address = "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/v2.0/token",
+                Address = "https://login.microsoftonline.com/<Tenat ID>/oauth2/v2.0/token",
 
-                ClientId = "cdbcce09-5216-4d9a-8e67-0b2170306526",
-                ClientSecret = "Dx-8Q~dj98cIeu1V~V2wEcznjS7QLrD87otXkdzQ",
+                ClientId = "<client ID>",
+                ClientSecret = "<client Secret>",
                 Code = code,
                 RedirectUri = "https://localhost:44303/CallBack",
 
                 // optional PKCE parameter
                // CodeVerifier = "xyz"
             });
+           
 
-
-          //  await ValidateResponseAndSignInAsync(response, "nonce");
+            await ValidateResponseAndSignInAsync(response, "nonce");
 
             if (!string.IsNullOrEmpty(response.IdentityToken))
             {
@@ -70,7 +70,7 @@ namespace MVC_SSO.Controllers
         {
             if (!string.IsNullOrWhiteSpace(response.IdentityToken))
             {
-               // var tokenClaims = ValidateToken(response.IdentityToken, nonce);
+                var tokenClaims = ValidateToken(response.IdentityToken, nonce);
                 var claims = new List<Claim>();
 
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
@@ -91,31 +91,26 @@ namespace MVC_SSO.Controllers
             }
         }
 
-     //   private List<Claim> ValidateToken(string token, string nonce)
-     //   {
-     //       var certString = "MIIDBTCCAfGgAwIBAgIQNQb+T2ncIrNA6cKvUA1GWTAJBgUrDgMCHQUAMBIxEDAOBgNVBAMTB0RldlJvb3QwHhcNMTAwMTIwMjIwMDAwWhcNMjAwMTIwMjIwMDAwWjAVMRMwEQYDVQQDEwppZHNydjN0ZXN0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqnTksBdxOiOlsmRNd+mMS2M3o1IDpK4uAr0T4/YqO3zYHAGAWTwsq4ms+NWynqY5HaB4EThNxuq2GWC5JKpO1YirOrwS97B5x9LJyHXPsdJcSikEI9BxOkl6WLQ0UzPxHdYTLpR4/O+0ILAlXw8NU4+jB4AP8Sn9YGYJ5w0fLw5YmWioXeWvocz1wHrZdJPxS8XnqHXwMUozVzQj+x6daOv5FmrHU1r9/bbp0a1GLv4BbTtSh4kMyz1hXylho0EvPg5p9YIKStbNAW9eNWvv5R8HN7PPei21AsUqxekK0oW9jnEdHewckToX7x5zULWKwwZIksll0XnVczVgy7fCFwIDAQABo1wwWjATBgNVHSUEDDAKBggrBgEFBQcDATBDBgNVHQEEPDA6gBDSFgDaV+Q2d2191r6A38tBoRQwEjEQMA4GA1UEAxMHRGV2Um9vdIIQLFk7exPNg41NRNaeNu0I9jAJBgUrDgMCHQUAA4IBAQBUnMSZxY5xosMEW6Mz4WEAjNoNv2QvqNmk23RMZGMgr516ROeWS5D3RlTNyU8FkstNCC4maDM3E0Bi4bbzW3AwrpbluqtcyMN3Pivqdxx+zKWKiORJqqLIvN8CT1fVPxxXb/e9GOdaR8eXSmB0PgNUhM4IjgNkwBbvWC9F/lzvwjlQgciR7d4GfXPYsE1vf8tmdQaY8/PtdAkExmbrb9MihdggSoGXlELrPA91Yce+fiRcKY3rQlNWVd4DOoJ/cPXsXwry8pWjNCo5JD8Q+RQ5yZEy7YPoifwemLhTdsBz3hlZr28oCGJ3kbnpW0xGvQb3VHSTVVbeei0CfXoW6iz1";
-     //       var cert = new X509Certificate2(Convert.FromBase64String(certString));
+         private List<Claim> ValidateToken(string token, string nonce)
+     
+        {
+            var certstring = "<MySelfSignedCertificate.pfx>";
+            X509Certificate2 cert = new X509Certificate2(Convert.FromBase64String(certstring));
+            Microsoft.IdentityModel.Tokens.SecurityKey key = new X509SecurityKey(cert);
 
-     //       var parameters = new TokenValidationParameters
-     //       {
-     //           ValidAudience = "codeclient",
-     //           ValidIssuer = "",
-     //           //IssuerSigningKey = new X509SecurityToken(cert)
-     //       };
+            var parameters = new TokenValidationParameters
+            {
+                ValidAudience = "<client ID>",
+                ValidIssuer = "https://login.microsoftonline.com/<Tenat id>/v2.0",
+                IssuerSigningKey = key
+            };
 
-     //SecurityToken jwt;
-     //       var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
+            Microsoft.IdentityModel.Tokens.SecurityToken jwt;
+            var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
+           
 
-     //       // validate nonce
-     //       var nonceClaim = principal.FindFirst("nonce");
-
-     //       if (!string.Equals(nonceClaim.Value, nonce, StringComparison.Ordinal))
-     //       {
-     //           throw new Exception("invalid nonce");
-     //       }
-
-     //       return principal.Claims.ToList();
-     //   }
+            return principal.Claims.ToList();
+        }
 
         //private async Task<IEnumerable<Claim>> GetUserInfoClaimsAsync(string accessToken)
         //{
