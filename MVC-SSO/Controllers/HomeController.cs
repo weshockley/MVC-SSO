@@ -16,9 +16,7 @@ namespace MVC_SSO.Controllers
 
         public ActionResult SignIn()
         {
-           // var request = new HttpClient();
-
-            var url =
+                var url =
                 "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/" +
                 "?client_id=cdbcce09-5216-4d9a-8e67-0b2170306526" +
                 "&response_type=code" +

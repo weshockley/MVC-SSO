@@ -12,3 +12,12 @@ Code: <strong>@ViewBag.Code</strong>
 <br />
 
 
+@if (ViewBag.Code != "none")
+{
+    using (Html.BeginForm())
+    {
+        <input type="submit" value="Get token" />
+    }
+}
+
+
