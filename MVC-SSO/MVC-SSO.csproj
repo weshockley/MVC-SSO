@@ -211,6 +211,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\CallBack\Index.cshtml" />
+    <Content Include="Views\CallBack\Token.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
