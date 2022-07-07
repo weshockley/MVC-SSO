@@ -20,7 +20,7 @@ namespace MVC_SSO.Controllers
                 "https://login.microsoftonline.com/<Tenat ID>/oauth2/" +
                 "?client_id=client ID" +
                 "&response_type=code" +
-                "&scope=user:read" +
+                "&scope=openid profile read write offline_access" +
                 "&redirect_uri=https://localhost:44303/CallBack" +
                 "&nonce=" + "nonce";
 

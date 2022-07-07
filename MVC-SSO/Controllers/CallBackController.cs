@@ -88,6 +88,7 @@ namespace MVC_SSO.Controllers
 
                 var id = new ClaimsIdentity(claims, "Cookies");
                
+
             }
         }
 
@@ -101,14 +102,14 @@ namespace MVC_SSO.Controllers
             var parameters = new TokenValidationParameters
             {
                 ValidAudience = "<client ID>",
-                ValidIssuer = "https://login.microsoftonline.com/<Tenat id>/v2.0",
+                ValidIssuer = "https://login.microsoftonline.com/<Tenant id>/v2.0",
                 IssuerSigningKey = key
             };
 
             Microsoft.IdentityModel.Tokens.SecurityToken jwt;
             var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
-           
 
+            
             return principal.Claims.ToList();
         }
 
