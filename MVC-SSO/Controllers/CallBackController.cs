@@ -103,7 +103,7 @@ namespace MVC_SSO.Controllers
             {
                 ValidAudience = "<client ID>",
                 ValidIssuer = "https://login.microsoftonline.com/<Tenant id>/v2.0",
-                IssuerSigningKey = key
+                IssuerSigningKeys = keys
             };
 
             Microsoft.IdentityModel.Tokens.SecurityToken jwt;
