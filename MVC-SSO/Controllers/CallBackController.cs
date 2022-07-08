@@ -15,6 +15,7 @@ using IdentityModel.Client;
 using System.Security.Cryptography.X509Certificates;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace MVC_SSO.Controllers
 {
@@ -70,7 +71,14 @@ namespace MVC_SSO.Controllers
         {
             if (!string.IsNullOrWhiteSpace(response.IdentityToken))
             {
-                var tokenClaims = ValidateToken(response.IdentityToken, nonce);
+                string stsDiscoveryEndpoint = "https://login.microsoftonline.com/<Tenant ID>/v2.0/.well-known/openid-configuration";
+
+                var configManager = new Microsoft.IdentityModel.Protocols.ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
+
+                OpenIdConnectConfiguration config = await configManager.GetConfigurationAsync();
+                List<Microsoft.IdentityModel.Tokens.SecurityKey> keys = config.SigningKeys.ToList();
+
+                var tokenClaims = ValidateToken(response.IdentityToken, nonce, keys);
                 var claims = new List<Claim>();
 
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
@@ -92,12 +100,9 @@ namespace MVC_SSO.Controllers
             }
         }
 
-         private List<Claim> ValidateToken(string token, string nonce)
-     
+         private List<Claim> ValidateToken(string token, string nonce, List<Microsoft.IdentityModel.Tokens.SecurityKey> keys)
         {
-            var certstring = "<MySelfSignedCertificate.pfx>";
-            X509Certificate2 cert = new X509Certificate2(Convert.FromBase64String(certstring));
-            Microsoft.IdentityModel.Tokens.SecurityKey key = new X509SecurityKey(cert);
+            //keys are retrieved from open id config -> jwks_uri. 
 
             var parameters = new TokenValidationParameters
             {
