@@ -111,7 +111,7 @@ namespace MVC_SSO.Controllers
             var parameters = new TokenValidationParameters
             {
                 ValidAudience = "<client ID>",
-                ValidIssuer = "https://login.microsoftonline.com/<Tenant id>/v2.0",
+                ValidIssuer = "https://login.microsoftonline.com/<tenant id>/v2.0",
                 IssuerSigningKeys = keys
             };
 
@@ -122,17 +122,21 @@ namespace MVC_SSO.Controllers
             return principal.Claims.ToList();
         }
 
-        //private async Task<IEnumerable<Claim>> GetUserInfoClaimsAsync(string accessToken)
-        //{
-        //    var userInfoClient = new UserInfoClient(new Uri(Constants.UserInfoEndpoint), accessToken);
+        //TODO - Use the URI of the Graph API from your company
+        private async Task<IEnumerable<Claim>> GetUserInfoClaimsAsync(string accessToken)
+        {        
+            var client = new HttpClient();
 
-        //    var userInfo = await userInfoClient.GetAsync();
+            var userInfo = await client.GetUserInfoAsync(new UserInfoRequest
+            {
+                Address = "https://graph.microsoft.com/oidc/userinfo",
+                Token = accessToken
+            });
 
-        //    var claims = new List<Claim>();
-        //    userInfo.Claims.ToList().ForEach(ui => claims.Add(new Claim(ui.Item1, ui.Item2)));
-
-        //    return claims;
-        //}
+            var claims = new List<Claim>();
+            claims = userInfo.Claims.ToList();
+            return claims;
+        }
 
         private string ParseJwt(string token)
         {
