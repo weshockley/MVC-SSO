@@ -18,7 +18,7 @@ namespace MVC_SSO.Controllers
         {
                 var url =
                 "https://login.microsoftonline.com/<Tenat ID>/oauth2/" +
-                "?client_id=client ID" +
+                "?client_id=<client ID>" +
                 "&response_type=code" +
                 "&scope=openid profile read write offline_access" +
                 "&redirect_uri=https://localhost:44303/CallBack" +
