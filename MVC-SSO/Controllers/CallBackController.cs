@@ -39,6 +39,8 @@ namespace MVC_SSO.Controllers
 
             var client = new HttpClient();
 
+            //TODO - Modify client ID, client Secret and Redirect URI
+
             var response = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
                 Address = "https://login.microsoftonline.com/<Tenat ID>/oauth2/v2.0/token",
@@ -67,6 +69,7 @@ namespace MVC_SSO.Controllers
             return View("Token", response);
         }
 
+        //TODO - Modify Tenant ID
         private async Task ValidateResponseAndSignInAsync(TokenResponse response, string nonce)
         {
             if (!string.IsNullOrWhiteSpace(response.IdentityToken))
@@ -100,6 +103,7 @@ namespace MVC_SSO.Controllers
             }
         }
 
+        //TODO - Modify cleint ID
          private List<Claim> ValidateToken(string token, string nonce, List<Microsoft.IdentityModel.Tokens.SecurityKey> keys)
         {
             //keys are retrieved from open id config -> jwks_uri. 

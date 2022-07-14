@@ -14,6 +14,9 @@ namespace MVC_SSO.Controllers
             return View();
         }
 
+    
+        // TODO - Modify tenant ID, client ID and redirect URI
+        
         public ActionResult SignIn()
         {
                 var url =
