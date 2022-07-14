@@ -98,7 +98,11 @@ namespace MVC_SSO.Controllers
                 }
 
                 var id = new ClaimsIdentity(claims, "Cookies");
-               
+
+                ViewBag.Name = id?.FindFirst("name")?.Value;
+
+                ViewBag.IsAuthZ = tokenClaims.Identity.IsAuthenticated;
+
 
             }
         }
