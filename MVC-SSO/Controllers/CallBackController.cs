@@ -100,6 +100,7 @@ namespace MVC_SSO.Controllers
                 var id = new ClaimsIdentity(claims, "Cookies");
 
                 ViewBag.Name = id?.FindFirst("name")?.Value;
+                ViewBag.Email = id?.FindFirst("email")?.Value;
 
                 ViewBag.IsAuthZ = tokenClaims.Identity.IsAuthenticated;
 
@@ -126,7 +127,7 @@ namespace MVC_SSO.Controllers
             return principal;
         }
 
-        //TODO - Use the URI of the Graph API from your company
+        //TODO - Use the URI of the Graph API that your company provides
         private async Task<IEnumerable<Claim>> GetUserInfoClaimsAsync(string accessToken)
         {        
             var client = new HttpClient();
