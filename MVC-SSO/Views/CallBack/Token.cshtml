@@ -1,6 +1,16 @@
 ﻿
 @model IdentityModel.Client.TokenResponse
 
+@if (ViewBag.IsAuthZ != false)
+{
+    <h1>User Claim</h1>
+    <p>
+        <strong>User Name:</strong>
+        <br />
+        <pr>@ViewBag.Name</pr>
+    </p>
+}
+
 @{
     ViewBag.Title = "Token response";
 }
