@@ -39,11 +39,11 @@ namespace MVC_SSO.Controllers
 
             var client = new HttpClient();
 
-            //TODO - Modify client ID, client Secret and Redirect URI
+            //TODO - Modify tenat ID, client ID, client Secret and Redirect URI
 
             var response = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
-                Address = "https://login.microsoftonline.com/<Tenat ID>/oauth2/v2.0/token",
+                Address = "https://login.microsoftonline.com/<tenant ID>/oauth2/v2.0/token",
 
                 ClientId = "<client ID>",
                 ClientSecret = "<client Secret>",
@@ -69,12 +69,12 @@ namespace MVC_SSO.Controllers
             return View("Token", response);
         }
 
-        //TODO - Modify Tenant ID
+        //TODO - Modify tenant ID
         private async Task ValidateResponseAndSignInAsync(TokenResponse response, string nonce)
         {
             if (!string.IsNullOrWhiteSpace(response.IdentityToken))
             {
-                string stsDiscoveryEndpoint = "https://login.microsoftonline.com/<Tenant ID>/v2.0/.well-known/openid-configuration";
+                string stsDiscoveryEndpoint = "https://login.microsoftonline.com/<tenant ID>/v2.0/.well-known/openid-configuration";
 
                 var configManager = new Microsoft.IdentityModel.Protocols.ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
 
@@ -86,7 +86,7 @@ namespace MVC_SSO.Controllers
 
                 if (!string.IsNullOrWhiteSpace(response.AccessToken))
                 {
-                   // claims.AddRange(await GetUserInfoClaimsAsync(response.AccessToken));
+                    claims.AddRange(await GetUserInfoClaimsAsync(response.AccessToken));
 
                     claims.Add(new Claim("access_token", response.AccessToken));
                     claims.Add(new Claim("expires_at", (DateTime.UtcNow.ToEpochTime() + response.ExpiresIn).ToDateTimeFromEpoch().ToString()));
@@ -103,23 +103,23 @@ namespace MVC_SSO.Controllers
             }
         }
 
-        //TODO - Modify cleint ID
-         private List<Claim> ValidateToken(string token, string nonce, List<Microsoft.IdentityModel.Tokens.SecurityKey> keys)
+        //TODO - Modify cleint ID and tenant ID
+        private ClaimsPrincipal ValidateToken(string token, string nonce, List<Microsoft.IdentityModel.Tokens.SecurityKey> keys)
         {
             //keys are retrieved from open id config -> jwks_uri. 
 
             var parameters = new TokenValidationParameters
             {
                 ValidAudience = "<client ID>",
-                ValidIssuer = "https://login.microsoftonline.com/<tenant id>/v2.0",
+                ValidIssuer = "https://login.microsoftonline.com/<tenant ID>/v2.0",
                 IssuerSigningKeys = keys
             };
 
             Microsoft.IdentityModel.Tokens.SecurityToken jwt;
             var principal = new JwtSecurityTokenHandler().ValidateToken(token, parameters, out jwt);
 
-            
-            return principal.Claims.ToList();
+
+            return principal;
         }
 
         //TODO - Use the URI of the Graph API from your company
